@@ -7,28 +7,33 @@ import (
 	"sync"
 )
 
+type URLStatus struct {
+	URL  string
+	IsUp bool
+}
+
 func Run() {
 	urlList, err := storage.LoadURLs()
 	if err != nil {
-		output.PrintError("Error: " + err.Error())
+		output.PrintError("Error loading URLs: " + err.Error())
 		return
 	}
 
-	var wg sync.WaitGroup
-	results := make(chan struct {
-		url  string
-		isUp bool
-	}, len(urlList.URLs))
+	results := checkURLs(urlList.URLs)
 
-	for _, url := range urlList.URLs {
+	printResults(results)
+}
+
+func checkURLs(urls []string) <-chan URLStatus {
+	results := make(chan URLStatus, len(urls))
+	var wg sync.WaitGroup
+
+	for _, url := range urls {
 		wg.Add(1)
 		go func(url string) {
 			defer wg.Done()
 			isUp := utils.IsUp(url)
-			results <- struct {
-				url  string
-				isUp bool
-			}{url, isUp}
+			results <- URLStatus{URL: url, IsUp: isUp}
 		}(url)
 	}
 
@@ -37,8 +42,12 @@ func Run() {
 		close(results)
 	}()
 
+	return results
+}
+
+func printResults(results <-chan URLStatus) {
 	output.PrintInfo("Checking URLs:")
 	for result := range results {
-		output.PrintURLStatus(result.url, result.isUp)
+		output.PrintURLStatus(result.URL, result.IsUp)
 	}
 }

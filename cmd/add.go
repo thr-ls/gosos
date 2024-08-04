@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"flag"
+	"fmt"
 	"git.thrls.net/thrls/gosos/output"
 	"git.thrls.net/thrls/gosos/storage"
 	"net/url"
@@ -13,24 +14,20 @@ func Add(args []string) {
 	addCmd := flag.NewFlagSet("add", flag.ExitOnError)
 	addCmd.Parse(args)
 
-	if addCmd.NArg() < 1 {
-		output.PrintError("Insufficient arguments")
-		output.PrintInfo("Usage: gosos add <url>")
+	if err := validateArgs(addCmd); err != nil {
+		output.PrintError(err.Error())
 		return
 	}
 
 	urlStr := addCmd.Arg(0)
-
-	// Validate URL
-	parsedURL, err := url.Parse(urlStr)
-	if err != nil || !isValidURL(parsedURL) {
-		output.PrintError("Invalid URL: " + urlStr)
+	if err := validateURL(urlStr); err != nil {
+		output.PrintError(err.Error())
 		return
 	}
 
 	urlList, err := storage.LoadURLs()
 	if err != nil {
-		output.PrintError("Error: " + err.Error())
+		output.PrintError("Error loading URLs: " + err.Error())
 		return
 	}
 
@@ -39,14 +36,32 @@ func Add(args []string) {
 		return
 	}
 
-	urlList.URLs = append(urlList.URLs, urlStr)
-	err = storage.SaveURLs(urlList)
-	if err != nil {
-		output.PrintError("Error: " + err.Error())
+	if err := addURLToList(urlList, urlStr); err != nil {
+		output.PrintError("Error saving URL: " + err.Error())
 		return
 	}
 
 	output.PrintSuccess("URL added successfully")
+}
+
+func validateArgs(cmd *flag.FlagSet) error {
+	if cmd.NArg() < 1 {
+		return fmt.Errorf("insufficient arguments\nUsage: gosos add <url>")
+	}
+	return nil
+}
+
+func validateURL(urlStr string) error {
+	parsedURL, err := url.Parse(urlStr)
+	if err != nil || !isValidURL(parsedURL) {
+		return fmt.Errorf("invalid URL: %s", urlStr)
+	}
+	return nil
+}
+
+func addURLToList(urlList *storage.URLList, urlStr string) error {
+	urlList.URLs = append(urlList.URLs, urlStr)
+	return storage.SaveURLs(urlList)
 }
 
 func isValidURL(u *url.URL) bool {

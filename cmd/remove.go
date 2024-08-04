@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"flag"
+	"fmt"
 	"git.thrls.net/thrls/gosos/output"
 	"git.thrls.net/thrls/gosos/storage"
 	"git.thrls.net/thrls/gosos/utils"
@@ -10,35 +11,47 @@ import (
 )
 
 func Remove(args []string) {
-	rmCmd := flag.NewFlagSet("remove", flag.ExitOnError)
-	rmCmd.Parse(args)
-
-	if rmCmd.NArg() < 1 {
-		output.PrintInfo("Usage: gosos remove <url>")
+	url, err := parseRemoveArgs(args)
+	if err != nil {
+		output.PrintError(err.Error())
 		return
 	}
-
-	url := rmCmd.Arg(0)
 
 	urlList, err := storage.LoadURLs()
 	if err != nil {
-		output.PrintError("Error: " + err.Error())
+		output.PrintError("Error loading URLs: " + err.Error())
 		return
 	}
 
-	ok := slices.Contains(urlList.URLs, url)
-	if !ok {
-		output.PrintError("Error: URL does not exist")
+	if err := removeURLFromList(urlList, url); err != nil {
+		output.PrintError(err.Error())
 		return
 	}
 
-	urlList.URLs = utils.RemoveElement(urlList.URLs, url)
-
-	err = storage.SaveURLs(urlList)
-	if err != nil {
-		output.PrintError("Error: " + err.Error())
+	if err := storage.SaveURLs(urlList); err != nil {
+		output.PrintError("Error saving URL list: " + err.Error())
 		return
 	}
 
 	output.PrintSuccess("URL removed from list successfully")
+}
+
+func parseRemoveArgs(args []string) (string, error) {
+	rmCmd := flag.NewFlagSet("remove", flag.ExitOnError)
+	rmCmd.Parse(args)
+
+	if rmCmd.NArg() < 1 {
+		return "", fmt.Errorf("insufficient arguments\nUsage: gosos remove <url>")
+	}
+
+	return rmCmd.Arg(0), nil
+}
+
+func removeURLFromList(urlList *storage.URLList, url string) error {
+	if !slices.Contains(urlList.URLs, url) {
+		return fmt.Errorf("URL does not exist in the list")
+	}
+
+	urlList.URLs = utils.RemoveElement(urlList.URLs, url)
+	return nil
 }
