@@ -88,4 +88,4 @@ If you encounter any problems or have any questions, please open an issue on the
 
 ## Todo
 - [ ] Create tests
-- [ ] Fix a few bugs with pterm terminal output
+- [ ] Fix some gliches with pterm terminal output
