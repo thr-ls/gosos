@@ -1,6 +1,6 @@
-# gosos (Save Our Services)
+# Gosos (Save Our Services)
 
-gosos is a simple CLI tool for monitoring website and API statuses.
+Gosos is a simple CLI tool for monitoring website and API statuses.
 
 I needed something I could use to check the multiple self-hosted services I use.
 
@@ -88,4 +88,4 @@ If you encounter any problems or have any questions, please open an issue on the
 
 ## Todo
 - [ ] Create tests
-- [ ] Fix some gliches with pterm terminal output
+- [ ] Fix some glitches with pterm terminal output
