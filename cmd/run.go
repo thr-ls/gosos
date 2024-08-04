@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"git.thrls.net/thrls/gosos/output"
-	"git.thrls.net/thrls/gosos/storage"
 	"git.thrls.net/thrls/gosos/utils"
 	"sync"
 )
@@ -12,8 +11,9 @@ type URLStatus struct {
 	IsUp bool
 }
 
+// Run function orchestrates the process of checking the status of all URLs in the list
 func Run() {
-	urlList, err := storage.LoadURLs()
+	urlList, err := loadURLs()
 	if err != nil {
 		output.PrintError("Error loading URLs: " + err.Error())
 		return
@@ -24,6 +24,7 @@ func Run() {
 	printResults(results)
 }
 
+// checkURLs concurrently checks the status of all provided URLs and returns a channel of results
 func checkURLs(urls []string) <-chan URLStatus {
 	results := make(chan URLStatus, len(urls))
 	var wg sync.WaitGroup

@@ -2,11 +2,11 @@ package cmd
 
 import (
 	"git.thrls.net/thrls/gosos/output"
-	"git.thrls.net/thrls/gosos/storage"
 )
 
+// List function displays all URLs stored in gosos
 func List() {
-	urlList, err := storage.LoadURLs()
+	urlList, err := loadURLs()
 	if err != nil {
 		output.PrintError("Error loading URLs: " + err.Error())
 		return

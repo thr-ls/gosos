@@ -3,7 +3,6 @@ package cmd
 import (
 	"bufio"
 	"git.thrls.net/thrls/gosos/output"
-	"git.thrls.net/thrls/gosos/storage"
 	"git.thrls.net/thrls/gosos/utils"
 	"os"
 	"time"
@@ -14,6 +13,7 @@ const (
 	shutdownDelay  = time.Second
 )
 
+// Live function manages the real-time monitoring of URLs
 func Live(interval int) {
 	urlList, err := loadURLs()
 	if err != nil {
@@ -30,24 +30,19 @@ func Live(interval int) {
 
 	launchMonitors(urlList.URLs, stopChan, statusChan)
 
+	// Listen for user input to stop the monitoring
 	inputChan := listenForUserInput()
 
+	// Create a map for efficient lookup of URL indices
 	urlIndexMap := createURLIndexMap(urlList.URLs)
 
+	// Start the main monitoring loop
 	monitorLoop(urlIndexMap, statusChan, inputChan, stopChan)
 
 	shutdown(statusChan)
 }
 
-func loadURLs() (*storage.URLList, error) {
-	urlList, err := storage.LoadURLs()
-	if err != nil {
-		output.PrintError("Error loading URLs: " + err.Error())
-		return &storage.URLList{}, err
-	}
-	return urlList, nil
-}
-
+// initializeLiveDisplay sets up the live display for URL statuses
 func initializeLiveDisplay(urls []string) error {
 	if err := output.InitLiveList(urls); err != nil {
 		output.PrintError("Error initializing live display: " + err.Error())
@@ -56,12 +51,14 @@ func initializeLiveDisplay(urls []string) error {
 	return nil
 }
 
+// launchMonitors starts a goroutine for each URL to monitor its status
 func launchMonitors(urls []string, stopChan <-chan struct{}, statusChan chan<- utils.StatusUpdate) {
 	for _, url := range urls {
 		go utils.MonitorStatus(url, stopChan, statusChan)
 	}
 }
 
+// listenForUserInput creates a channel that closes when user input is detected
 func listenForUserInput() <-chan struct{} {
 	inputChan := make(chan struct{})
 	go func() {
@@ -71,6 +68,7 @@ func listenForUserInput() <-chan struct{} {
 	return inputChan
 }
 
+// createURLIndexMap builds a map of URLs to their indices for quick lookups
 func createURLIndexMap(urls []string) map[string]int {
 	urlIndexMap := make(map[string]int, len(urls))
 	for i, url := range urls {
@@ -79,24 +77,30 @@ func createURLIndexMap(urls []string) map[string]int {
 	return urlIndexMap
 }
 
+// monitorLoop handles incoming status updates and checks for user input to stop monitoring
 func monitorLoop(urlIndexMap map[string]int, statusChan <-chan utils.StatusUpdate, inputChan <-chan struct{}, stopChan chan<- struct{}) {
 	for {
 		select {
 		case status := <-statusChan:
+			// Update the status of a URL when a status update is received
 			if index, exists := urlIndexMap[status.URL]; exists {
 				output.UpdateURLStatus(index, status.URL, status.IsUp)
 			}
 		case <-inputChan:
+			// Stop monitoring when user input is detected
 			close(stopChan)
 			output.PrintWarning("Monitoring stopped. Closing all connections.")
 			return
 		case <-time.After(updateInterval):
-			// This case prevents the select from blocking
+			// This case prevents the select from blocking indefinitely
+			// It allows the loop to check for new status updates or user input regularly
 		}
 	}
 }
 
+// shutdown performs cleanup operations before exiting the program
 func shutdown(statusChan chan utils.StatusUpdate) {
+	// Allow some time for final status updates to be processed
 	time.Sleep(shutdownDelay)
 	close(statusChan)
 }

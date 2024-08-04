@@ -10,6 +10,7 @@ import (
 	"golang.org/x/exp/slices"
 )
 
+// Remove function handles the removal of a URL from the list
 func Remove(args []string) {
 	url, err := parseRemoveArgs(args)
 	if err != nil {
@@ -17,7 +18,7 @@ func Remove(args []string) {
 		return
 	}
 
-	urlList, err := storage.LoadURLs()
+	urlList, err := loadURLs()
 	if err != nil {
 		output.PrintError("Error loading URLs: " + err.Error())
 		return
@@ -36,6 +37,7 @@ func Remove(args []string) {
 	output.PrintSuccess("URL removed from list successfully")
 }
 
+// parseRemoveArgs parses and validates the command-line arguments for the remove command
 func parseRemoveArgs(args []string) (string, error) {
 	rmCmd := flag.NewFlagSet("remove", flag.ExitOnError)
 	rmCmd.Parse(args)
@@ -47,6 +49,7 @@ func parseRemoveArgs(args []string) (string, error) {
 	return rmCmd.Arg(0), nil
 }
 
+// removeURLFromList removes the specified URL from the URLList
 func removeURLFromList(urlList *storage.URLList, url string) error {
 	if !slices.Contains(urlList.URLs, url) {
 		return fmt.Errorf("URL does not exist in the list")
