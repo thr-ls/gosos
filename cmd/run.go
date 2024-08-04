@@ -1,8 +1,8 @@
 package cmd
 
 import (
+	"git.thrls.net/thrls/gosos/network"
 	"git.thrls.net/thrls/gosos/output"
-	"git.thrls.net/thrls/gosos/utils"
 	"sync"
 )
 
@@ -33,7 +33,7 @@ func checkURLs(urls []string) <-chan URLStatus {
 		wg.Add(1)
 		go func(url string) {
 			defer wg.Done()
-			isUp := utils.IsUp(url)
+			isUp := network.IsUp(url)
 			results <- URLStatus{URL: url, IsUp: isUp}
 		}(url)
 	}

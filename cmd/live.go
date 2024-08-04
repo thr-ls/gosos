@@ -2,8 +2,8 @@ package cmd
 
 import (
 	"bufio"
+	"git.thrls.net/thrls/gosos/network"
 	"git.thrls.net/thrls/gosos/output"
-	"git.thrls.net/thrls/gosos/utils"
 	"os"
 	"time"
 )
@@ -26,7 +26,7 @@ func Live(interval int) {
 	defer output.StopLiveList()
 
 	stopChan := make(chan struct{})
-	statusChan := make(chan utils.StatusUpdate, len(urlList.URLs))
+	statusChan := make(chan network.StatusUpdate, len(urlList.URLs))
 
 	launchMonitors(urlList.URLs, stopChan, statusChan)
 
@@ -52,9 +52,9 @@ func initializeLiveDisplay(urls []string) error {
 }
 
 // launchMonitors starts a goroutine for each URL to monitor its status
-func launchMonitors(urls []string, stopChan <-chan struct{}, statusChan chan<- utils.StatusUpdate) {
+func launchMonitors(urls []string, stopChan <-chan struct{}, statusChan chan<- network.StatusUpdate) {
 	for _, url := range urls {
-		go utils.MonitorStatus(url, stopChan, statusChan)
+		go network.MonitorStatus(url, stopChan, statusChan)
 	}
 }
 
@@ -78,7 +78,7 @@ func createURLIndexMap(urls []string) map[string]int {
 }
 
 // monitorLoop handles incoming status updates and checks for user input to stop monitoring
-func monitorLoop(urlIndexMap map[string]int, statusChan <-chan utils.StatusUpdate, inputChan <-chan struct{}, stopChan chan<- struct{}) {
+func monitorLoop(urlIndexMap map[string]int, statusChan <-chan network.StatusUpdate, inputChan <-chan struct{}, stopChan chan<- struct{}) {
 	for {
 		select {
 		case status := <-statusChan:
@@ -99,7 +99,7 @@ func monitorLoop(urlIndexMap map[string]int, statusChan <-chan utils.StatusUpdat
 }
 
 // shutdown performs cleanup operations before exiting the program
-func shutdown(statusChan chan utils.StatusUpdate) {
+func shutdown(statusChan chan network.StatusUpdate) {
 	// Allow some time for final status updates to be processed
 	time.Sleep(shutdownDelay)
 	close(statusChan)
