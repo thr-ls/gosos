@@ -29,7 +29,7 @@ func Remove(args []string) {
 		return
 	}
 
-	if err := storage.SaveURLs(urlList); err != nil {
+	if err := storage.SaveURLs(urlList, storage.FileName); err != nil {
 		output.PrintError("Error saving URL list: " + err.Error())
 		return
 	}

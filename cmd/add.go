@@ -66,7 +66,7 @@ func validateURL(urlStr string) error {
 // addURLToList appends the new URL to the list and saves it to storage
 func addURLToList(urlList *storage.URLList, urlStr string) error {
 	urlList.URLs = append(urlList.URLs, urlStr)
-	return storage.SaveURLs(urlList)
+	return storage.SaveURLs(urlList, storage.FileName)
 }
 
 // isValidURL checks if a parsed URL has both a scheme and a host
