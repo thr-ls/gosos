@@ -80,7 +80,7 @@ To contribute to gosos or set up the development environment:
 
 ## Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+This is a project I built with the set of features I need for my personal use, but any contributions are welcome! Please feel free to submit a Pull Request.
 
 ## Support
 
@@ -89,3 +89,4 @@ If you encounter any problems or have any questions, please open an issue on the
 ## Todo
 - [ ] Create tests
 - [ ] Fix some glitches with pterm terminal output
+- [ ] Add options to remove from list by index
