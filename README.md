@@ -22,7 +22,7 @@ go install git.thrls.net/thrls/gosos@latest
 
 ## Usage
 
-gosos provides several commands for managing and monitoring URLs:
+Gosos provides several commands for managing and monitoring URLs:
 
 ```
 gosos <command> [options]
@@ -50,7 +50,7 @@ gosos live 60  # Check every 60 seconds
 
 ## Configuration
 
-gosos stores the list of URLs in a JSON file located at `~/.gosos-urls.json`. This file is automatically created by the tool.
+Gosos stores the list of URLs in a JSON file located at `~/.gosos-urls.json`. This file is automatically created by the tool.
 
 ## Development
 
