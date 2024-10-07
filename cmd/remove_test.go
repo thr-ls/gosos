@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"gitea.thrls.net/thr-ls/gosos/storage"
+	"github.com/thr-ls/gosos/storage"
 	"golang.org/x/exp/slices"
 	"testing"
 )

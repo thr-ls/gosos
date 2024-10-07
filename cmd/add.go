@@ -3,8 +3,8 @@ package cmd
 import (
 	"flag"
 	"fmt"
-	"gitea.thrls.net/thr-ls/gosos/output"
-	"gitea.thrls.net/thr-ls/gosos/storage"
+	"github.com/thr-ls/gosos/output"
+	"github.com/thr-ls/gosos/storage"
 	"net/url"
 
 	"golang.org/x/exp/slices"

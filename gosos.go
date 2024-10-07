@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	"gitea.thrls.net/thr-ls/gosos/cmd"
-	"gitea.thrls.net/thr-ls/gosos/output"
-	"gitea.thrls.net/thr-ls/gosos/utils"
+	"github.com/thr-ls/gosos/cmd"
+	"github.com/thr-ls/gosos/output"
+	"github.com/thr-ls/gosos/utils"
 	"os"
 	"strconv"
 )

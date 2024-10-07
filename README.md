@@ -17,7 +17,7 @@ I needed something I could use to check the multiple self-hosted services I use.
 To install gosos, make sure you have Go installed on your system, then run:
 
 ```
-go install gitea.thrls.net/thr-ls/gosos@latest
+go install github.com/thr-ls/gosos@latest
 ```
 
 ## Usage

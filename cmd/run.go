@@ -1,8 +1,8 @@
 package cmd
 
 import (
-	"gitea.thrls.net/thr-ls/gosos/network"
-	"gitea.thrls.net/thr-ls/gosos/output"
+	"github.com/thr-ls/gosos/network"
+	"github.com/thr-ls/gosos/output"
 	"sync"
 )
 

@@ -2,8 +2,8 @@ package cmd
 
 import (
 	"bufio"
-	"gitea.thrls.net/thr-ls/gosos/network"
-	"gitea.thrls.net/thr-ls/gosos/output"
+	"github.com/thr-ls/gosos/network"
+	"github.com/thr-ls/gosos/output"
 	"os"
 	"time"
 )

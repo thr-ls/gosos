@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"gitea.thrls.net/thr-ls/gosos/output"
+	"github.com/thr-ls/gosos/output"
 )
 
 // List function displays all URLs stored in gosos

@@ -1,8 +1,8 @@
 package cmd
 
 import (
-	"gitea.thrls.net/thr-ls/gosos/output"
-	"gitea.thrls.net/thr-ls/gosos/storage"
+	"github.com/thr-ls/gosos/output"
+	"github.com/thr-ls/gosos/storage"
 )
 
 // loadURLs retrieves the list of URLs from storage
