@@ -1,6 +1,6 @@
 package utils
 
-const HelpText = `gosos (Save Our Services) - A simple website and API status monitor
+const HelpText = `gosos (Save Our Services) - A simple cli tool and API status monitor
 
 Usage: gosos <command> [options]
 
